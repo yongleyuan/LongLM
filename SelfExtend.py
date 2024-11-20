@@ -115,7 +115,7 @@ def apply(loaded_model, group_size, window_size, enable_flash_attention=False, s
                                             group_size_2=window_size,
                                             scale_base=scale_base)
             # after the default version of attention in 4.36 is LlamaSpdaAttention, but in before 4,36 or in 4.38, it is LlamaAttention
-            modifed_2 = modify_method_of_instance(loaded_model, "LlamaAttention", "forward", self_extend_attention_forward)
+            modifed_2 = modify_method_of_instance(loaded_model, "LlamaSdpaAttention", "forward", self_extend_attention_forward)
 
             if not modifed_2:
                 raise Exception(f"Failed to modify the attention method of {arch_name}")
@@ -138,7 +138,7 @@ def apply(loaded_model, group_size, window_size, enable_flash_attention=False, s
             modifed_2 = modify_method_of_instance(loaded_model, "MistralAttention", "forward", self_extend_attention_forward)
             if not modifed_2:
                 raise Exception(f"Failed to modify the attention method of {arch_name}")
-    elif 'Gemma' in arch_name:
+    elif ('Gemma' in arch_name or 'GPT' in arch_name):
         if enable_flash_attention:
             self_extend_attention_forward = partial(SE.Gemma.flash_self_extend_forward,
                                             group_size_1=group_size, 
@@ -153,7 +153,7 @@ def apply(loaded_model, group_size, window_size, enable_flash_attention=False, s
                                             group_size_1=group_size,
                                             group_size_2=window_size,
                                             scale_base=scale_base)
-            modifed_2= modify_method_of_instance(loaded_model, "GemmaAttention", "forward", self_extend_attention_forward)
+            modifed_2= modify_method_of_instance(loaded_model, "GemmaSdpaAttention", "forward", self_extend_attention_forward)
             if not modifed_2:
                 raise Exception(f"Failed to modify the attention method of {arch_name}")
     elif 'Qwen2' in arch_name:
