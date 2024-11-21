@@ -92,8 +92,8 @@ def apply(loaded_model, group_size, window_size, enable_flash_attention=False, s
                                             group_size_1=group_size, 
                                             group_size_2=window_size,
                                             scale_base=scale_base)
-                modifed_1 = modify_method_of_instance(loaded_model, "LlamaFlashAttention2", "_flash_attention_forward", SE.selfextend_flash_attn.flash_attention2_forward_with_window_size)
-                modifed_2 = modify_method_of_instance(loaded_model, "LlamaFlashAttention2", "forward", self_extend_attention_forward)
+                modifed_1 = modify_method_of_instance(loaded_model, "LlamaSdpaFlashAttention2", "_flash_attention_forward", SE.selfextend_flash_attn.flash_attention2_forward_with_window_size)
+                modifed_2 = modify_method_of_instance(loaded_model, "LlamaSdpaFlashAttention2", "forward", self_extend_attention_forward)
                 if (not modifed_1) or (not modifed_2):
                     raise Exception(f"Failed to modify the attention method of {arch_name}")
 
